@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Countdown 🎉</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background: #0f172a;
+      color: #e5e7eb;
+      transition: background 0.15s, color 0.15s;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5em;
+    }
+
+    #age {
+      font-size: 1.4em;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
+    #countdown {
+      font-size: 2em;
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    .ms {
+      font-size: 0.7em;
+      opacity: 0.8;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Birthday Countdown 🎂</h1>
+  <div id="age">Loading...</div>
+  <div id="countdown">Loading...</div>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+  
+    const birthYear = 2013;
+    const birthMonth = 1;
+    const birthDay = 15;
+    const birthHour = 0;
+    const birthMinute = 0;
+
+    let lastTurningAge = null;
+
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+    let confetti = [];
+
+    window.addEventListener("resize", () => {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    });
+
+    function launchConfetti() {
+      confetti = [];
+      for (let i = 0; i < 220; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          r: Math.random() * 6 + 4,
+          dx: (Math.random() - 0.5) * 7,
+          dy: Math.random() * 6 + 5,
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+      });
+      confetti = confetti.filter(p => p.y < canvas.height + 20);
+      if (confetti.length) requestAnimationFrame(drawConfetti);
+    }
+
+    function getNextBirthday() {
+      const now = new Date();
+      let year = now.getFullYear();
+
+      let birthday = new Date(year, birthMonth, birthDay, birthHour, birthMinute);
+      if (birthday <= now) {
+        birthday = new Date(year + 1, birthMonth, birthDay, birthHour, birthMinute);
+      }
+      return birthday;
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const birthday = getNextBirthday();
+      let diff = birthday - now;
+
+      const turningAge = birthday.getFullYear() - birthYear;
+      document.getElementById("age").textContent =
+        `Days until ${turningAge}`;
+
+      // 🎊 Confetti when age changes
+      if (lastTurningAge !== null && turningAge !== lastTurningAge) {
+        launchConfetti();
+        drawConfetti();
+      }
+      lastTurningAge = turningAge;
+
+      // 🌈 Flashing colors in last minute
+      if (diff <= 60000) {
+        const hue = Math.random() * 360;
+        document.body.style.background = `hsl(${hue}, 100%, 55%)`;
+        document.body.style.color = `hsl(${(hue + 180) % 360}, 100%, 95%)`;
+        document.body.style.textShadow = "0 0 14px rgba(255,255,255,0.9)";
+      } else {
+        document.body.style.background = "#0f172a";
+        document.body.style.color = "#e5e7eb";
+        document.body.style.textShadow = "none";
+      }
+
+      if (diff <= 0) {
+        document.getElementById("countdown").textContent =
+          "🎉 IT'S HER BIRTHDAY!!! 🎉";
+        return;
+      }
+
+      const days = Math.floor(diff / 86400000);
+      diff %= 86400000;
+      const hours = Math.floor(diff / 3600000);
+      diff %= 3600000;
+      const minutes = Math.floor(diff / 60000);
+      diff %= 60000;
+      const seconds = Math.floor(diff / 1000);
+      const ms = diff % 1000;
+
+      document.getElementById("countdown").innerHTML =
+        `${days}d ${hours}h ${minutes}m ${seconds}s 
+        <span class="ms">${ms.toString().padStart(3, "0")}ms</span>`;
+    }
+
+    setInterval(updateCountdown, 1);
+  </script>
+
+</body>
+</html>
