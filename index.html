@@ -120,14 +120,12 @@
       document.getElementById("age").textContent =
         `Days until ${turningAge}`;
 
-      // 🎊 Confetti when age changes
       if (lastTurningAge !== null && turningAge !== lastTurningAge) {
         launchConfetti();
         drawConfetti();
       }
       lastTurningAge = turningAge;
 
-      // 🌈 Flashing colors in last minute
       if (diff <= 60000) {
         const hue = Math.random() * 360;
         document.body.style.background = `hsl(${hue}, 100%, 55%)`;
@@ -141,7 +139,6 @@
 
       if (diff <= 0) {
         document.getElementById("countdown").textContent =
-          "🎉 IT'S HER BIRTHDAY!!! 🎉";
         return;
       }
 
