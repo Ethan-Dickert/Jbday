@@ -116,9 +116,11 @@
       const birthday = getNextBirthday();
       let diff = birthday - now;
 
-      const turningAge = birthday.getFullYear() - birthYear;
-      document.getElementById("age").textContent =
-        `Days until ${turningAge}`;
+      if (diff <= 0) {
+  document.getElementById("countdown").textContent =
+    "HAPPY BIRTHDAY! 🎉🎂";
+  return;
+}
 
       if (lastTurningAge !== null && turningAge !== lastTurningAge) {
         launchConfetti();
