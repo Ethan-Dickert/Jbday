@@ -81,7 +81,7 @@
           r: Math.random() * 6 + 4,
           dx: (Math.random() - 0.5) * 7,
           dy: Math.random() * 6 + 5,
-          color: `hsl(${Math.random() * 360}, 100%, 60%)`
+          color: hsl(${Math.random() * 360}, 100%, 60%)
         });
       }
     }
@@ -116,11 +116,9 @@
       const birthday = getNextBirthday();
       let diff = birthday - now;
 
-      if (diff <= 0) {
-  document.getElementById("countdown").textContent =
-    "HAPPY BIRTHDAY! 🎉🎂";
-  return;
-}
+      const turningAge = birthday.getFullYear() - birthYear;
+      document.getElementById("age").textContent =
+        Days until ${turningAge};
 
       if (lastTurningAge !== null && turningAge !== lastTurningAge) {
         launchConfetti();
@@ -130,8 +128,8 @@
 
       if (diff <= 60000) {
         const hue = Math.random() * 360;
-        document.body.style.background = `hsl(${hue}, 100%, 55%)`;
-        document.body.style.color = `hsl(${(hue + 180) % 360}, 100%, 95%)`;
+        document.body.style.background = hsl(${hue}, 100%, 55%);
+        document.body.style.color = hsl(${(hue + 180) % 360}, 100%, 95%);
         document.body.style.textShadow = "0 0 14px rgba(255,255,255,0.9)";
       } else {
         document.body.style.background = "#0f172a";
@@ -141,6 +139,7 @@
 
       if (diff <= 0) {
         document.getElementById("countdown").textContent =
+           "HAPPY BIRTHDAY! 🎉🎂";
         return;
       }
 
@@ -154,8 +153,8 @@
       const ms = diff % 1000;
 
       document.getElementById("countdown").innerHTML =
-        `${days}d ${hours}h ${minutes}m ${seconds}s 
-        <span class="ms">${ms.toString().padStart(3, "0")}ms</span>`;
+        ${days}d ${hours}h ${minutes}m ${seconds}s 
+        <span class="ms">${ms.toString().padStart(3, "0")}ms</span>;
     }
 
     setInterval(updateCountdown, 1);
